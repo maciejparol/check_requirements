@@ -1,0 +1,21 @@
+{% for file_name, requirement in requirements.items() %}
+<h2>File name: {{ file_name }}</h2>
+<table>
+    <tr>
+        <th>Package Name</th>
+        <th>Current Version</th>
+        <th>Latest Version</th>
+        <th>Vulnerabilities</th>
+        <th>In PYPI</th>
+    </tr>
+    {% for name, requirement_item in requirement.items() %}
+    <tr>
+        <td><strong>{{ name }}</strong></td>
+        <td>{{ requirement_item.current_version }}</td>
+        <td>{% if not requirement_item.equal_versions %}<strong>{% endif %}{{ requirement_item.latest_version }}{% if not requirement_item.equal_versions %}</strong>{% endif %}</td>
+        <td>{{ requirement_item.vulnerabilities_list }}</td>
+        <td>{% if not requirement_item.found_in_pypi %}<strong>{% endif %}{{ requirement_item.human_found_in_pypi }}{% if not requirement_item.found_in_pypi %}</strong>{% endif %}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endfor %}
