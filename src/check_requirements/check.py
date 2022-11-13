@@ -1,53 +1,58 @@
-import requests
-import requirements
+import os
+from typing import Callable
 
-from src.check_requirements.models import RequirementData
+import click
+
+from click import Option, Context
+
+from src.check_requirements._check import check_requirements_in_file
 from src.check_requirements.report.console import console_report
 from src.check_requirements.report.html import html_report
 from src.check_requirements.report.json import json_report
-
-req_files = [
-    "/home/maciej/PycharmProjects/check_requirements/req.txt",
-    # "/home/maciej/PycharmProjects/check_requirements/req2.txt",
-]
+import logging
 
 
-def _set_requirement_data() -> dict:
-    pass
+REPORT_TYPES = ["console", "html", "json"]
 
 
-def check_requirements_in_file(file_name: str) -> dict:
-    tmp_data = {}
-    with open(file_name, "r") as fd:
-        for req in requirements.parse(fd):
-            if not req.line.startswith("git+"):
-                request = requests.get(f"https://pypi.org/pypi/{req.name}/json")
-                current_version = req.specs[0][1]
-                if request.ok:
-                    request_json = request.json()
-                    tmp_data[req.name] = RequirementData(
-                        current_version=current_version,
-                        latest_version=request_json["info"]["version"],
-                        vulnerabilities=request_json["vulnerabilities"],
-                        found_in_pypi=True,
-                    )
-                else:
-                    tmp_data[req.name] = RequirementData(
-                        current_version=current_version,
-                        latest_version="-",
-                        vulnerabilities=[],
-                        found_in_pypi=False,
-                    )
-
-    return tmp_data
+def validate_report(ctx: Context, param: Option, value: str) -> Callable:
+    if value in REPORT_TYPES:
+        if value == "console":
+            return console_report
+        elif value == "html":
+            return html_report
+        elif value == "json":
+            return json_report
+    else:
+        raise click.BadParameter(f"Possible options: {', '.join(REPORT_TYPES)}")
 
 
-def check(files: list[str], output=console_report):
+def validate_files(ctx: Context, param: Option, value: list[str]) -> Callable:
+    list_files = []
+    for path in value:
+        if os.path.isfile(path):
+            list_files.append(path)
+        else:
+            logging.warning(f"Not found file: {path} - omitted")
+    if len(list_files) < 1:
+        logging.warning("Omitted all files")
+    return list_files
+
+
+@click.command()
+@click.option(
+    "--files", "-f", prompt="Files to check", multiple=True, callback=validate_files
+)
+@click.option(
+    "--report",
+    "-r",
+    default="console",
+    help=f"Report type: {', '.join(REPORT_TYPES)}. Default - console",
+    callback=validate_report,
+)
+def check_requirements(files: list[str], report):
+
     tmp_ = {}
     for file in files:
         tmp_[file] = check_requirements_in_file(file)
-    print(output(tmp_))
-
-
-if __name__ == "__main__":
-    check(req_files)
+    print(report(tmp_))
