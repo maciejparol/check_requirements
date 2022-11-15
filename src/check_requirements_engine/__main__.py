@@ -41,7 +41,7 @@ def validate_files(ctx: Context, param: Option, value: list[str]) -> Callable:
 
 @click.command()
 @click.option(
-    "--files", "-f", prompt="Files to check", multiple=True, callback=validate_files
+    "--files", "-f", multiple=True, callback=validate_files
 )
 @click.option(
     "--report",
