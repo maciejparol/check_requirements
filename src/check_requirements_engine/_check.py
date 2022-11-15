@@ -2,7 +2,7 @@ import requests
 import requirements
 
 
-from src.check_requirements.models import RequirementData
+from check_requirements_engine.models import RequirementData
 
 
 def check_requirements_in_file(file_name: str) -> dict:

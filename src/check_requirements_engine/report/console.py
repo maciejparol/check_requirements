@@ -1,4 +1,4 @@
-from src.check_requirements.models import RequirementData
+from check_requirements_engine.models import RequirementData
 
 HEADER = "\033[95m| {:<30} | {:<20} | {:<20} | {:<20} | {:20}\033[0m\n".format(
     "Package Name", "Current Version", "Latest Version", "Vulnerabilities", "In PYPI"

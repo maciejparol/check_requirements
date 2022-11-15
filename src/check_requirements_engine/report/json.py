@@ -1,7 +1,7 @@
 import dataclasses
 import json
 
-from src.check_requirements.models import RequirementData
+from check_requirements_engine.models import RequirementData
 
 
 class EnhancedJSONEncoder(json.JSONEncoder):

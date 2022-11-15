@@ -2,7 +2,7 @@ from typing import Any
 
 from jinja2 import Environment, FileSystemLoader
 
-from src.check_requirements.models import RequirementData
+from check_requirements_engine.models import RequirementData
 
 ENVIRONMENT = Environment(loader=FileSystemLoader("report/templates"))
 ENVIRONMENT.trim_blocks = True

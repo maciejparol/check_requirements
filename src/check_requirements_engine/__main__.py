@@ -5,10 +5,10 @@ import click
 
 from click import Option, Context
 
-from src.check_requirements._check import check_requirements_in_file
-from src.check_requirements.report.console import console_report
-from src.check_requirements.report.html import html_report
-from src.check_requirements.report.json import json_report
+from check_requirements_engine._check import check_requirements_in_file
+from check_requirements_engine.report.console import console_report
+from check_requirements_engine.report.html import html_report
+from check_requirements_engine.report.json import json_report
 import logging
 
 
@@ -56,3 +56,8 @@ def check_requirements(files: list[str], report):
     for file in files:
         tmp_[file] = check_requirements_in_file(file)
     print(report(tmp_))
+
+
+
+if __name__ == "__main__":
+    check_requirements()
