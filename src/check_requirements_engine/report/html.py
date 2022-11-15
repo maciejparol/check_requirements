@@ -4,7 +4,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from check_requirements_engine.models import RequirementData
 
-ENVIRONMENT = Environment(loader=FileSystemLoader("report/templates"))
+ENVIRONMENT = Environment(loader=FileSystemLoader("check_requirements_engine/report/templates"))
 ENVIRONMENT.trim_blocks = True
 ENVIRONMENT.lstrip_blocks = True
 
